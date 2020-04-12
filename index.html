@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Async Await</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+  integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+</head>
+<body>
+  
+  <header class="container-fluid" style="text-align: center; margin: 5vh 0">
+    <h1 style="font-size: large;">Busca de usuário da api</h1>
+    <h2 style="font-size: small;">Busca 10 usuários, 1 a 1</h2>
+    <a href="https://jsonplaceholder.typicode.com/">Documentação da api JSONPlaceholder</a>
+  </header>
+  
+  <section class="container">
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Nome</th>
+          <th scope="col">Apelido</th>
+          <th scope="col">Email</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!--A função imprimirHtml do javascript irá popular essa tabela-->
+      </tbody>
+    </table>
+  </section>
+  
+</body>
+<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+
+
+<script>
+  
+  let tb = document.querySelector('tbody');
+  let usuarios = [];
+  
+  //Função que realiza a busca dos usuários direto pela api
+  async function buscarUsuario(id){
+    try {
+      let url = `https://jsonplaceholder.typicode.com/users/${id}`;
+      let promise = await fetch(url);
+      
+      if(!promise.ok){
+        throw new Error('Não foi possível buscar a api');
+      }
+      //Aguarda o retorno o usuário já em json
+      let usuario = await promise.json();
+      //Retorna o usuário
+      return usuario;
+
+    } catch (error) {
+      //Caso seja informado algum id inválido
+      throw new Error('Não foi possível buscar o usuário id: ' + id);
+    }
+  };
+  
+
+  //Função que imprime os valores encontrados na página html
+  let imprimirHtml = () =>{
+      for(let usuario of usuarios){
+      tb.innerHTML += `<tr>
+        <th scope="row">${usuario.id}</th>
+        <td>${usuario.name}</td>
+        <td>${usuario.username}</td>
+        <td>${usuario.email}</td>
+      </tr>`;
+      }
+  };
+  
+  //Função assincrona que chama a busca
+  async function users() {
+    //Try para tratar caso ocorra algum erro
+    try{
+      //Estou simulando a chamanda de uma mesma função com id diferente,
+      //no entanto você pode utilizar outras funções que sejam 'promise' que funcionará também
+      let user1 = await buscarUsuario(1);
+      usuarios.push(user1);
+      let user2 = await buscarUsuario(2)
+      usuarios.push(user2);
+      let user3 = await buscarUsuario(3);
+      usuarios.push(user3);
+      let user4 = await buscarUsuario(4);
+      usuarios.push(user4);
+      let user5 = await buscarUsuario(5);
+      usuarios.push(user5);
+      let user6 = await buscarUsuario(6);
+      usuarios.push(user6);
+      let user7 = await buscarUsuario(7);
+      usuarios.push(user7);
+      
+      //Esta função irá atribuir os valores na tabela html, linha 70
+      imprimirHtml();
+
+    }catch(e){
+      alert(e.message);
+    }
+  }
+  
+  //Iniciar a função
+  users();
+  
+</script>
+</html>
